@@ -1,0 +1,59 @@
+const { gql } = require('apollo-server');
+
+const typeDefs = gql`
+  
+  type Query{
+    #launches: [Launch]!
+    launches (pageSize: Int, after: String): LaunchConnection!
+    launch(id:ID!): Launch
+    me: User
+  }
+
+  type Mutation {
+    bookTrips(launchIds: [ID]!): TripsUpdateResponse!
+    cancelTrip(launchId: ID!): TripsUpdateResponse!
+    login(email: String): String
+  }
+
+  # basics types 
+  type Launch {
+    id: ID!
+    site: String
+    mission: Mission
+    rocket: Rocket
+    isBooked: Boolean!
+  }
+  type LaunchConnection {
+    cursor: String!
+    hasMore: Boolean!
+    launches: [Launch]!
+  }
+  type Rocket {
+    id: ID!
+    name: String
+    type: String
+  }
+  type User {
+    id:ID!
+    email: String!
+    trips: [Launch]!
+  }
+  type Mission {
+    name: String
+    missionPatch(size: PatchSize): String
+  }
+  enum PatchSize {
+    SMALL
+    LARGE
+  }
+  
+  # type for mutations response (can be abstract) by a interface
+  type TripsUpdateResponse {
+    success: Boolean!
+    message: String
+    launches: [Launch]
+  }
+  
+  `
+
+module.exports = typeDefs;
